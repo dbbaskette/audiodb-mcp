@@ -1,0 +1,10 @@
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/AudioDbMcpServerApplication.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/config/McpConfiguration.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/controller/TestController.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/model/Album.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/model/Artist.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/model/ArtistSearchResponse.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/model/DiscographyResponse.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/service/AudioDbToolService.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/service/SimpleAudioDbClient.java
+/Users/dbbaskette/Projects/audiodb-mcp/src/main/java/com/audiodb/mcp/service/TheAudioDbClient.java

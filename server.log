@@ -1,0 +1,78 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/opt/homebrew/Cellar/maven/3.9.11/libexec/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.audiodb:audiodb-mcp-server >-------------------
+[INFO] Building AudioDB MCP Server 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.3:run (default-cli) > test-compile @ audiodb-mcp-server >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ audiodb-mcp-server ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ audiodb-mcp-server ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ audiodb-mcp-server ---
+[INFO] skip non existing resourceDirectory /Users/dbbaskette/Projects/audiodb-mcp/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ audiodb-mcp-server ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.5.3:run (default-cli) < test-compile @ audiodb-mcp-server <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.3:run (default-cli) @ audiodb-mcp-server ---
+[INFO] Attaching agents: []
+16:39:05.928 [main] INFO com.audiodb.mcp.AudioDbMcpServerApplication -- Starting AudioDB MCP Server Application...
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+2025-09-17 16:39:06 - Starting AudioDbMcpServerApplication using Java 24.0.2 with PID 94938 (/Users/dbbaskette/Projects/audiodb-mcp/target/classes started by dbbaskette in /Users/dbbaskette/Projects/audiodb-mcp)
+2025-09-17 16:39:06 - Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-09-17 16:39:06 - No active profile set, falling back to 1 default profile: "default"
+2025-09-17 16:39:06 - Bean 'org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration' of type [org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2025-09-17 16:39:06 - Bean 'serverAnnotatedBeanRegistry' of type [org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration$ServerMcpAnnotatedBeans] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2025-09-17 16:39:06 - Bean 'spring.ai.mcp.server.annotation-scanner-org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerProperties' of type [org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (file:/Users/dbbaskette/.m2/repository/io/netty/netty-common/4.1.122.Final/netty-common-4.1.122.Final.jar)
+WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+2025-09-17 16:39:06 - MCP Configuration initialized
+2025-09-17 16:39:06 - MCP Server enabled - scanning for @McpTool annotations
+2025-09-17 16:39:06 - Component scan packages: com.audiodb.mcp.service
+2025-09-17 16:39:06 - TheAudioDB client initialized with base URL: https://www.theaudiodb.com/api/v1/json and API key: test key
+2025-09-17 16:39:06 - Simple AudioDB client initialized with base URL: https://www.theaudiodb.com/api/v1/json and API key: test key
+2025-09-17 16:39:06 - Exposing 2 endpoints beneath base path '/actuator'
+2025-09-17 16:39:06 - Enable tools capabilities, notification: true
+2025-09-17 16:39:06 - Registered tools: 2
+2025-09-17 16:39:06 - Enable resources capabilities, notification: true
+2025-09-17 16:39:06 - Enable prompts capabilities, notification: true
+2025-09-17 16:39:06 - Enable completions capabilities
+2025-09-17 16:39:06 - Netty started on port 8090 (http)
+2025-09-17 16:39:06 - Started AudioDbMcpServerApplication in 0.827 seconds (process running for 0.936)
+2025-09-17 16:39:06 - AudioDB MCP Server Application started successfully
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:29 min
+[INFO] Finished at: 2025-09-17T16:40:35-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.3:run (default-cli) on project audiodb-mcp-server: Process terminated with exit code: 137 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

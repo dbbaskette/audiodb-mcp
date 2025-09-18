@@ -1,0 +1,10 @@
+com/audiodb/mcp/model/Artist.class
+com/audiodb/mcp/model/DiscographyResponse.class
+com/audiodb/mcp/service/TheAudioDbClient.class
+com/audiodb/mcp/controller/TestController.class
+com/audiodb/mcp/service/AudioDbToolService.class
+com/audiodb/mcp/AudioDbMcpServerApplication.class
+com/audiodb/mcp/config/McpConfiguration.class
+com/audiodb/mcp/model/Album.class
+com/audiodb/mcp/model/ArtistSearchResponse.class
+com/audiodb/mcp/service/SimpleAudioDbClient.class
