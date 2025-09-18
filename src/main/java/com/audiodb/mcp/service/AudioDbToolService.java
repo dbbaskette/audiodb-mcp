@@ -22,9 +22,9 @@ public class AudioDbToolService {
         this.audioDbClient = audioDbClient;
     }
 
-    @McpTool(name = "search_artist", description = "Search for a musical artist by name and return comprehensive information including biography (with career history, album sales, awards, achievements), genre, style, formation year, band members, record labels, and images")
+    @McpTool(name = "search_artist", description = "Search for a musical artist or band by name and return comprehensive information including biography, genre, style, formation/birth dates, disbandment/death dates, record labels, social media links, and images. Works for both individual artists and bands.")
     public String searchArtist(
-            @McpToolParam(description = "The name of the musical artist to search for", required = true) String artistName) {
+            @McpToolParam(description = "The name of the musical artist or band to search for", required = true) String artistName) {
 
         logger.info("MCP Tool called: search_artist with artistName='{}'", artistName);
 
@@ -36,9 +36,19 @@ public class AudioDbToolService {
             }
 
             StringBuilder result = new StringBuilder();
-            result.append("Artist Information:\n");
+
+            // Determine if this is a band or individual artist
+            boolean isBand = artist.getFormedYear() != null && !artist.getFormedYear().trim().isEmpty();
+            boolean isIndividual = artist.intBornYear() != null && !artist.intBornYear().trim().isEmpty();
+
+            result.append(String.format("%s Information:\n", isBand ? "Band" : isIndividual ? "Artist" : "Artist/Band"));
             result.append("==================\n");
             result.append(String.format("Name: %s\n", artist.getName()));
+
+            // Show alternate names if available
+            if (artist.strArtistAlternate() != null && !artist.strArtistAlternate().trim().isEmpty()) {
+                result.append(String.format("Also known as: %s\n", artist.strArtistAlternate()));
+            }
 
             if (artist.getGenre() != null) {
                 result.append(String.format("Genre: %s\n", artist.getGenre()));
@@ -48,8 +58,17 @@ public class AudioDbToolService {
                 result.append(String.format("Style: %s\n", artist.getStyle()));
             }
 
-            if (artist.getFormedYear() != null) {
-                result.append(String.format("Formed Year: %s\n", artist.getFormedYear()));
+            // Handle band formation vs individual birth
+            if (isBand) {
+                result.append(String.format("Formed: %s\n", artist.getFormedYear()));
+                if (artist.strDisbanded() != null && !artist.strDisbanded().trim().isEmpty()) {
+                    result.append(String.format("Disbanded: %s\n", artist.strDisbanded()));
+                }
+            } else if (isIndividual) {
+                result.append(String.format("Born: %s\n", artist.intBornYear()));
+                if (artist.intDiedYear() != null && !artist.intDiedYear().trim().isEmpty()) {
+                    result.append(String.format("Died: %s\n", artist.intDiedYear()));
+                }
             }
 
             if (artist.strLabel() != null) {
@@ -58,6 +77,19 @@ public class AudioDbToolService {
 
             if (artist.strMood() != null) {
                 result.append(String.format("Mood: %s\n", artist.strMood()));
+            }
+
+            // Add social media/web presence
+            if (artist.strWebsite() != null && !artist.strWebsite().trim().isEmpty()) {
+                result.append(String.format("Website: %s\n", artist.strWebsite()));
+            }
+
+            if (artist.strFacebook() != null && !artist.strFacebook().trim().isEmpty()) {
+                result.append(String.format("Facebook: %s\n", artist.strFacebook()));
+            }
+
+            if (artist.strTwitter() != null && !artist.strTwitter().trim().isEmpty()) {
+                result.append(String.format("Twitter: %s\n", artist.strTwitter()));
             }
 
             if (artist.getBiography() != null && !artist.getBiography().trim().isEmpty()) {
@@ -85,10 +117,10 @@ public class AudioDbToolService {
         }
     }
 
-    @McpTool(name = "search_album", description = "Search for album information by artist name and optionally album name, returning album details, release info, and descriptions")
+    @McpTool(name = "search_album", description = "Search for album information by artist or band name and optionally album name, returning album details, release info, descriptions, and cover art. Works for both individual artists and bands.")
     public String searchAlbum(
-            @McpToolParam(description = "The name of the musical artist", required = true) String artistName,
-            @McpToolParam(description = "The name of the album (optional - if not provided, returns all albums by artist)", required = false) String albumName) {
+            @McpToolParam(description = "The name of the musical artist or band", required = true) String artistName,
+            @McpToolParam(description = "The name of the album (optional - if not provided, returns all albums by the artist/band)", required = false) String albumName) {
 
         logger.info("MCP Tool called: search_album with artistName='{}', albumName='{}'", artistName, albumName);
 
@@ -159,9 +191,9 @@ public class AudioDbToolService {
         }
     }
 
-    @McpTool(name = "search_track", description = "Search for track/song information by artist name and track name, returning song details and metadata")
+    @McpTool(name = "search_track", description = "Search for track/song information by artist or band name and track name, returning song details and metadata. Works for both individual artists and bands.")
     public String searchTrack(
-            @McpToolParam(description = "The name of the musical artist", required = true) String artistName,
+            @McpToolParam(description = "The name of the musical artist or band", required = true) String artistName,
             @McpToolParam(description = "The name of the track/song", required = true) String trackName) {
 
         logger.info("MCP Tool called: search_track with artistName='{}', trackName='{}'", artistName, trackName);
@@ -212,9 +244,19 @@ public class AudioDbToolService {
 
     private String formatArtistInfo(Artist artist) {
         StringBuilder result = new StringBuilder();
-        result.append("Artist Information:\n");
+
+        // Determine if this is a band or individual artist
+        boolean isBand = artist.getFormedYear() != null && !artist.getFormedYear().trim().isEmpty();
+        boolean isIndividual = artist.intBornYear() != null && !artist.intBornYear().trim().isEmpty();
+
+        result.append(String.format("%s Information:\n", isBand ? "Band" : isIndividual ? "Artist" : "Artist/Band"));
         result.append("==================\n");
         result.append(String.format("Name: %s\n", artist.getName()));
+
+        // Show alternate names if available
+        if (artist.strArtistAlternate() != null && !artist.strArtistAlternate().trim().isEmpty()) {
+            result.append(String.format("Also known as: %s\n", artist.strArtistAlternate()));
+        }
 
         if (artist.getGenre() != null) {
             result.append(String.format("Genre: %s\n", artist.getGenre()));
@@ -222,15 +264,38 @@ public class AudioDbToolService {
         if (artist.getStyle() != null) {
             result.append(String.format("Style: %s\n", artist.getStyle()));
         }
-        if (artist.getFormedYear() != null) {
-            result.append(String.format("Formed Year: %s\n", artist.getFormedYear()));
+
+        // Handle band formation vs individual birth
+        if (isBand) {
+            result.append(String.format("Formed: %s\n", artist.getFormedYear()));
+            if (artist.strDisbanded() != null && !artist.strDisbanded().trim().isEmpty()) {
+                result.append(String.format("Disbanded: %s\n", artist.strDisbanded()));
+            }
+        } else if (isIndividual) {
+            result.append(String.format("Born: %s\n", artist.intBornYear()));
+            if (artist.intDiedYear() != null && !artist.intDiedYear().trim().isEmpty()) {
+                result.append(String.format("Died: %s\n", artist.intDiedYear()));
+            }
         }
+
         if (artist.strLabel() != null) {
             result.append(String.format("Label: %s\n", artist.strLabel()));
         }
         if (artist.strMood() != null) {
             result.append(String.format("Mood: %s\n", artist.strMood()));
         }
+
+        // Add social media/web presence
+        if (artist.strWebsite() != null && !artist.strWebsite().trim().isEmpty()) {
+            result.append(String.format("Website: %s\n", artist.strWebsite()));
+        }
+        if (artist.strFacebook() != null && !artist.strFacebook().trim().isEmpty()) {
+            result.append(String.format("Facebook: %s\n", artist.strFacebook()));
+        }
+        if (artist.strTwitter() != null && !artist.strTwitter().trim().isEmpty()) {
+            result.append(String.format("Twitter: %s\n", artist.strTwitter()));
+        }
+
         if (artist.getBiography() != null && !artist.getBiography().trim().isEmpty()) {
             result.append(String.format("\nBiography:\n%s\n", artist.getBiography()));
         }
