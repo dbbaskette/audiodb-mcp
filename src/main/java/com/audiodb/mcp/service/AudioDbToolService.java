@@ -22,7 +22,7 @@ public class AudioDbToolService {
         this.audioDbClient = audioDbClient;
     }
 
-    @McpTool(name = "search_artist", description = "Search for a musical artist by name and return detailed information about them including biography, genre, formed year, and images")
+    @McpTool(name = "search_artist", description = "Search for a musical artist by name and return comprehensive information including biography (with career history, album sales, awards, achievements), genre, style, formation year, band members, record labels, and images")
     public String searchArtist(
             @McpToolParam(description = "The name of the musical artist to search for", required = true) String artistName) {
 
@@ -85,11 +85,12 @@ public class AudioDbToolService {
         }
     }
 
-    @McpTool(name = "get_artist_discography", description = "Retrieve the complete discography (list of albums) for a given musical artist including album names, release years, and details")
-    public String getArtistDiscography(
-            @McpToolParam(description = "The name of the musical artist whose discography to retrieve", required = true) String artistName) {
+    @McpTool(name = "search_album", description = "Search for album information by artist name and optionally album name, returning album details, release info, and descriptions")
+    public String searchAlbum(
+            @McpToolParam(description = "The name of the musical artist", required = true) String artistName,
+            @McpToolParam(description = "The name of the album (optional - if not provided, returns all albums by artist)", required = false) String albumName) {
 
-        logger.info("MCP Tool called: get_artist_discography with artistName='{}'", artistName);
+        logger.info("MCP Tool called: search_album with artistName='{}', albumName='{}'", artistName, albumName);
 
         try {
             List<Album> albums = audioDbClient.getArtistAlbumsList(artistName).block();
@@ -98,22 +99,30 @@ public class AudioDbToolService {
                 return String.format("No albums found for artist: '%s'", artistName);
             }
 
-            // Filter out albums with null names
-            List<Album> validAlbums = albums.stream()
+            // Filter albums by name if provided
+            List<Album> filteredAlbums = albums.stream()
                     .filter(album -> album.getName() != null && !album.getName().trim().isEmpty())
+                    .filter(album -> albumName == null || albumName.trim().isEmpty() ||
+                           album.getName().toLowerCase().contains(albumName.toLowerCase()))
                     .collect(Collectors.toList());
 
-            if (validAlbums.isEmpty()) {
-                return String.format("No valid albums found for artist: '%s'", artistName);
+            if (filteredAlbums.isEmpty()) {
+                return albumName != null ?
+                    String.format("No albums found matching '%s' by artist '%s'", albumName, artistName) :
+                    String.format("No valid albums found for artist: '%s'", artistName);
             }
 
             StringBuilder result = new StringBuilder();
-            result.append(String.format("Discography for %s:\n", artistName));
-            result.append("====================\n");
-            result.append(String.format("Total Albums: %d\n\n", validAlbums.size()));
+            if (albumName != null && !albumName.trim().isEmpty()) {
+                result.append(String.format("Album search results for '%s' by %s:\n", albumName, artistName));
+            } else {
+                result.append(String.format("Albums by %s:\n", artistName));
+            }
+            result.append("============================\n");
+            result.append(String.format("Found %d album(s):\n\n", filteredAlbums.size()));
 
-            for (int i = 0; i < validAlbums.size(); i++) {
-                Album album = validAlbums.get(i);
+            for (int i = 0; i < filteredAlbums.size(); i++) {
+                Album album = filteredAlbums.get(i);
                 result.append(String.format("%d. %s", i + 1, album.getName()));
 
                 if (album.getReleaseYear() != null && !album.getReleaseYear().trim().isEmpty()) {
@@ -141,12 +150,36 @@ public class AudioDbToolService {
                 result.append("\n");
             }
 
-            logger.info("Successfully retrieved {} albums for artist: {}", validAlbums.size(), artistName);
+            logger.info("Successfully found {} albums for artist: {}", filteredAlbums.size(), artistName);
             return result.toString();
 
         } catch (Exception e) {
-            logger.error("Error getting discography for artist '{}': {}", artistName, e.getMessage(), e);
-            return String.format("Error getting discography for artist '%s': %s", artistName, e.getMessage());
+            logger.error("Error searching albums for artist '{}': {}", artistName, e.getMessage(), e);
+            return String.format("Error searching albums for artist '%s': %s", artistName, e.getMessage());
+        }
+    }
+
+    @McpTool(name = "search_track", description = "Search for track/song information by artist name and track name, returning song details and metadata")
+    public String searchTrack(
+            @McpToolParam(description = "The name of the musical artist", required = true) String artistName,
+            @McpToolParam(description = "The name of the track/song", required = true) String trackName) {
+
+        logger.info("MCP Tool called: search_track with artistName='{}', trackName='{}'", artistName, trackName);
+
+        try {
+            // Note: AudioDB API doesn't have a direct track search in our current client
+            // This is a placeholder that could be implemented with the searchtrack.php endpoint
+            // For now, we'll return a helpful message
+            return String.format("Track search feature for '%s' by %s is not yet implemented. " +
+                "This would use the AudioDB searchtrack.php endpoint: " +
+                "https://www.theaudiodb.com/api/v1/json/2/searchtrack.php?s=%s&t=%s",
+                trackName, artistName,
+                artistName.replace(" ", "_").toLowerCase(),
+                trackName.replace(" ", "_").toLowerCase());
+
+        } catch (Exception e) {
+            logger.error("Error searching track '{}' by artist '{}': {}", trackName, artistName, e.getMessage(), e);
+            return String.format("Error searching track '%s' by artist '%s': %s", trackName, artistName, e.getMessage());
         }
     }
 
@@ -164,16 +197,16 @@ public class AudioDbToolService {
         }
     }
 
-    public String getArtistDiscographySync(String artistName) {
+    public String searchAlbumSync(String artistName, String albumName) {
         try {
             List<Album> albums = audioDbClient.getArtistAlbumsList(artistName).block();
             if (albums == null || albums.isEmpty()) {
                 return String.format("No albums found for artist: '%s'", artistName);
             }
-            return formatDiscography(artistName, albums);
+            return formatAlbumSearch(artistName, albumName, albums);
         } catch (Exception e) {
-            logger.error("Error in sync discography for artist '{}': {}", artistName, e.getMessage(), e);
-            return String.format("Error getting discography for artist '%s': %s", artistName, e.getMessage());
+            logger.error("Error in sync album search for artist '{}': {}", artistName, e.getMessage(), e);
+            return String.format("Error searching albums for artist '%s': %s", artistName, e.getMessage());
         }
     }
 
@@ -213,22 +246,30 @@ public class AudioDbToolService {
         return result.toString();
     }
 
-    private String formatDiscography(String artistName, List<Album> albums) {
-        List<Album> validAlbums = albums.stream()
+    private String formatAlbumSearch(String artistName, String albumName, List<Album> albums) {
+        List<Album> filteredAlbums = albums.stream()
                 .filter(album -> album.getName() != null && !album.getName().trim().isEmpty())
+                .filter(album -> albumName == null || albumName.trim().isEmpty() ||
+                       album.getName().toLowerCase().contains(albumName.toLowerCase()))
                 .collect(Collectors.toList());
 
-        if (validAlbums.isEmpty()) {
-            return String.format("No valid albums found for artist: '%s'", artistName);
+        if (filteredAlbums.isEmpty()) {
+            return albumName != null ?
+                String.format("No albums found matching '%s' by artist '%s'", albumName, artistName) :
+                String.format("No valid albums found for artist: '%s'", artistName);
         }
 
         StringBuilder result = new StringBuilder();
-        result.append(String.format("Discography for %s:\n", artistName));
-        result.append("====================\n");
-        result.append(String.format("Total Albums: %d\n\n", validAlbums.size()));
+        if (albumName != null && !albumName.trim().isEmpty()) {
+            result.append(String.format("Album search results for '%s' by %s:\n", albumName, artistName));
+        } else {
+            result.append(String.format("Albums by %s:\n", artistName));
+        }
+        result.append("============================\n");
+        result.append(String.format("Found %d album(s):\n\n", filteredAlbums.size()));
 
-        for (int i = 0; i < validAlbums.size(); i++) {
-            Album album = validAlbums.get(i);
+        for (int i = 0; i < filteredAlbums.size(); i++) {
+            Album album = filteredAlbums.get(i);
             result.append(String.format("%d. %s", i + 1, album.getName()));
 
             if (album.getReleaseYear() != null && !album.getReleaseYear().trim().isEmpty()) {

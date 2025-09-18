@@ -3,12 +3,8 @@ package com.audiodb.mcp.controller;
 import com.audiodb.mcp.service.AudioDbToolService;
 import com.audiodb.mcp.service.SimpleAudioDbClient;
 import com.audiodb.mcp.model.Artist;
-import com.audiodb.mcp.model.Album;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/test")
@@ -68,47 +64,15 @@ public class TestController {
         }
     }
 
-    @GetMapping("/discography")
-    public ResponseEntity<String> testGetDiscography(@RequestParam("artist") String artist) {
+    @GetMapping("/album")
+    public ResponseEntity<String> testSearchAlbum(
+            @RequestParam("artist") String artist,
+            @RequestParam(value = "album", required = false) String album) {
         try {
-            List<Album> albums = simpleClient.getArtistDiscography(artist);
-            if (albums == null || albums.isEmpty()) {
-                return ResponseEntity.ok()
-                    .header("Content-Type", "text/plain; charset=utf-8")
-                    .body(String.format("No albums found for artist: '%s'", artist));
-            }
-
-            List<Album> validAlbums = albums.stream()
-                    .filter(album -> album.getName() != null && !album.getName().trim().isEmpty())
-                    .collect(Collectors.toList());
-
-            if (validAlbums.isEmpty()) {
-                return ResponseEntity.ok()
-                    .header("Content-Type", "text/plain; charset=utf-8")
-                    .body(String.format("No valid albums found for artist: '%s'", artist));
-            }
-
-            StringBuilder result = new StringBuilder();
-            result.append(String.format("Discography for %s:\n", artist));
-            result.append("====================\n");
-            result.append(String.format("Total Albums: %d\n\n", validAlbums.size()));
-
-            for (int i = 0; i < validAlbums.size(); i++) {
-                Album album = validAlbums.get(i);
-                result.append(String.format("%d. %s", i + 1, album.getName()));
-
-                if (album.getReleaseYear() != null && !album.getReleaseYear().trim().isEmpty()) {
-                    result.append(String.format(" (%s)", album.getReleaseYear()));
-                }
-                if (album.getGenre() != null && !album.getGenre().trim().isEmpty()) {
-                    result.append(String.format(" - %s", album.getGenre()));
-                }
-                result.append("\n");
-            }
-
+            String result = toolService.searchAlbumSync(artist, album);
             return ResponseEntity.ok()
                 .header("Content-Type", "text/plain; charset=utf-8")
-                .body(result.toString());
+                .body(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                 .body("Error: " + e.getMessage());
@@ -124,11 +88,13 @@ public class TestController {
             - Example: /test/artist?name=coldplay
             - Tests the search_artist MCP tool
 
-            GET /test/discography?artist={artist_name}
-            - Example: /test/discography?artist=coldplay
-            - Tests the get_artist_discography MCP tool
+            GET /test/album?artist={artist_name}&album={album_name}
+            - Example: /test/album?artist=coldplay&album=parachutes
+            - Example: /test/album?artist=coldplay (all albums)
+            - Tests the search_album MCP tool
 
             These endpoints directly call the MCP tool methods for easy testing.
+            The search_track tool is available via MCP but not implemented in test endpoints yet.
             """);
     }
 }
