@@ -1,0 +1,59 @@
+# Cloud Foundry ignore file
+# Similar to .gitignore but for CF deployments
+
+# Development files
+.DS_Store
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# Build directories (except target/classes and the final JAR)
+target/surefire-reports/
+target/maven-archiver/
+target/maven-status/
+target/test-classes/
+
+# Logs
+*.log
+logs/
+server.log
+
+# IDE files
+.eclipse/
+.metadata/
+.recommenders/
+
+# OS files
+Thumbs.db
+.directory
+
+# Git
+.git/
+.gitignore
+
+# Local scripts and configs
+run-mcp.sh
+mcp-server.pid
+
+# Documentation
+README.md
+*.md
+
+# Test files
+src/test/
+
+# Maven wrapper (CF will use its own Maven)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Local environment files
+.env
+.env.local
+
+# Temporary files
+*.tmp
+*.temp
